@@ -2,13 +2,14 @@ import React, {Component} from 'react';
 import NewUserForm from './NewUserForm';
 import UserList from './UserList';
 import {connect} from 'react-redux';
-import {getUsersRequest, createUserRequest, deleteUserRequest, usersError} from '../actions/users';
+import {getUsersRequest, createUserRequest, deleteUserRequest, usersError} from "../actions/users";
 import {Alert} from 'reactstrap';
+import DashboardPage from "../pages/DashboardPage";
+import './App.css'
 
 class App extends Component {
     constructor(props){
         super(props);
-
         this.props.getUsersRequest();
     }
 
@@ -17,6 +18,7 @@ class App extends Component {
             firstName,
             lastName
         });
+
     };
 
     handleDeleteUserClick = (userId) => {
@@ -30,19 +32,23 @@ class App extends Component {
     };
 
     render(){
-        const users = this.props.users;
+        const users = this.props.users
+        // const { users, cre, deleteUserRequest, usersError } = this.props;
         return (
-            <div style={{margin: '0 auto', padding: '20px', maxWidth: '600px'}}>
-                <h2>
-                    Users
-                </h2>
-                <Alert color="danger" isOpen={!!this.props.users.error} toggle={this.handleCloseAlert}>
-                    {this.props.users.error}
+            <div style={{margin: '0 auto', padding: '20px', maxWidth: '100%'}}>
+                <DashboardPage>
+                    users={users}
+                    createUserRequest={users.createUserRequest}
+                    deleteUserRequest={users.deleteUserRequest}
+                    usersError={users.usersError}
+                </DashboardPage>
+                <h2>Users</h2>
+                <Alert color="danger" isOpen={!!users.error} toggle={usersError}>
+                    {users.error}
                 </Alert>
-                <NewUserForm onSubmit={this.handleCreateUserSubmit} />
-                {!!users.items && !!users.items.length &&
-                <UserList onDeleteUserClick={this.handleDeleteUserClick} users={users.items}/>
-                }
+                <NewUserForm onSubmit={createUserRequest} />
+                {!!users.items && !!users.items.length}
+                <UserList onDeleteUserClick={deleteUserRequest} users={users.items} />
             </div>
         );
     }
